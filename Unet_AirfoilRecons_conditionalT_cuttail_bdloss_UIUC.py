@@ -238,15 +238,15 @@ dense4 = layers.Dense(LATENT_DEPTH, activation='elu')(dense3)
 dense5 = layers.Dense(numT*n_ch*2*(zone1_i-2*cuttail-1)/pooling_size/pooling_size*(glayer)/pooling_size/pooling_size, activation='elu')(dense4)
 output_f = layers.Reshape((numT, int((glayer)/pooling_size/pooling_size), int((zone1_i-2*cuttail-1)/pooling_size/pooling_size), n_ch*2))(dense5)
 
-convt1 = layers.Conv3DTranspose(n_ch*2, (2,3,3), activation='elu', padding='same')(output_f) #512아니고 256
-upsamp1 = layers.UpSampling3D((pooling_sizeT,pooling_size,pooling_size))(convt1)
-skipcon1 = layers.Concatenate(axis=4)([conv2, upsamp1])
-conv6 = layers.Conv3D(n_ch*2, (2,3,3), activation = 'elu', padding='same')(skipcon1)
+convt1 = layers.Conv2DTranspose(n_ch*2, (3,3), activation='elu', padding='same')(output_f) #512아니고 256
+upsamp1 = layers.UpSampling2D((pooling_size,pooling_size))(convt1)
+skipcon1 = layers.Concatenate(axis=3)([conv2, upsamp1])
+conv6 = layers.Conv2D(n_ch*2, (3,3), activation = 'elu', padding='same')(skipcon1)
 
-convt2 = layers.Conv3DTranspose(n_ch*1, (2,3,3), activation='elu', padding='same')(conv6)
-upsamp2 = layers.UpSampling3D((pooling_sizeT,pooling_size,pooling_size))(convt2)
-skipcon2 = layers.Concatenate(axis=4)([conv1, upsamp2])
-conv7 = layers.Conv3D(n_ch*1, (2,3,3), activation = 'elu', padding='same')(skipcon2)
+convt2 = layers.Conv2DTranspose(n_ch*1, (3,3), activation='elu', padding='same')(conv6)
+upsamp2 = layers.UpSampling2D((pooling_size,pooling_size))(convt2)
+skipcon2 = layers.Concatenate(axis=3)([conv1, upsamp2])
+conv7 = layers.Conv2D(n_ch*1, (3,3), activation = 'elu', padding='same')(skipcon2)
 '''
 convt3 = layers.Conv2DTranspose(n_ch*2, (3,3), activation='elu', padding='same')(conv7)
 upsamp3 = layers.UpSampling2D((pooling_size,pooling_size))(convt3)
